@@ -35,22 +35,36 @@ TOKEN=$(curl --request POST \
 	--header "Content-Type: application/json" \
 	--data "{\"login_code\": \"$AUTH\", \"phone\": \"$INTL$PHONE\"}" | jq -r ".token")
 
-echo "Input a latitude to check scooters around!"
-read LAT
-echo "Input a longitude to check scooters around!"
-read LNG
+echo "Input a latitude to check scooters around! (bot left)"
+read LATBL
+echo "Input a longitude to check scooters around! (bot left)"
+read LNGBL
+
+echo "Input a latitude to check scooters around! (top right)"
+read LATTR
+echo "Input a longitude to check scooters around! (top right)"
+read LNGTR
+
+STEP_SIZE=0.01
 
 BOUNDING=0.1 # Observe scooters in a 0.1 degree-long bounding box
 ZOOM=16 # Zoom level. When < 15, vehicles are clustered
 while true
 do
-(curl --request GET \
-	--url "${BASE_URL}views/map?ne_lat=${LAT%.1f+$BOUNDING}&ne_lng=${LNG%.1f+$BOUNDING}&sw_lat=${LAT%.1f-$BOUNDING}&sw_lng=${LNG%.1f-$BOUNDING}&user_latitude=${LAT}&user_longitude=${LNG}&zoom=16" \
-	--cookie $COOKIEJAR_PATH \
-	--header "authorization: Bearer $TOKEN") >> $(date +%s)_l.json
-#| python -m json.tool) >> 
-	
-sleep 300
+	for x in `seq $LATBL $STEP_SIZE $LATTR`
+	do
+		echo $x
+		for y in `seq $LNGBL $STEP_SIZE $LNGTR`
+		do
+			echo $y
+			(curl --request GET \
+				--url "${BASE_URL}views/map?ne_lat=${x%.1f+$BOUNDING}&ne_lng=${y%.1f+$BOUNDING}&sw_lat=${x%.1f-$BOUNDING}&sw_lng=${y%.1f-$BOUNDING}&user_latitude=${x}&user_longitude=${y}&zoom=16" \
+				--cookie $COOKIEJAR_PATH \
+				--header "authorization: Bearer $TOKEN") >> $(date +%s)_l.json
+			#| python -m json.tool) >> 
+		done
+	done
+	sleep 300
 done
 
 
