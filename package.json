@@ -1,0 +1,23 @@
+{
+  "name": "limedata",
+  "version": "1.0.0",
+  "description": "u need to install jq binaries first :/",
+  "main": "parser.js",
+  "dependencies": {
+    "glob": "^7.1.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaets/limedata.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaets/limedata/issues"
+  },
+  "homepage": "https://github.com/kaets/limedata#readme"
+}
