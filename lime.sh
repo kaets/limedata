@@ -1,5 +1,10 @@
 #!/bin/sh
 
+#30.285832
+#-97.741737
+
+
+
 BASE_URL="https://web-production.lime.bike/api/rider/v1/"
 
 # Prompt for phone number to auth with Lime
@@ -45,7 +50,7 @@ read LATTR
 echo "Input a longitude to check scooters around! (top right)"
 read LNGTR
 
-STEP_SIZE=0.01
+STEP_SIZE=0.00175
 
 BOUNDING=0.1 # Observe scooters in a 0.1 degree-long bounding box
 ZOOM=16 # Zoom level. When < 15, vehicles are clustered
@@ -58,7 +63,7 @@ do
 		do
 			echo $y
 			(curl --request GET \
-				--url "${BASE_URL}views/map?ne_lat=${x%.1f+$BOUNDING}&ne_lng=${y%.1f+$BOUNDING}&sw_lat=${x%.1f-$BOUNDING}&sw_lng=${y%.1f-$BOUNDING}&user_latitude=${x}&user_longitude=${y}&zoom=16" \
+				--url "${BASE_URL}views/map?ne_lat=${x%.1f+$BOUNDING}&ne_lng=${y%.1f+$BOUNDING}&sw_lat=${x%.1f-$BOUNDING}&sw_lng=${y%.1f-$BOUNDING}&user_latitude=${x}&user_longitude=${y}&zoom=${ZOOM}" \
 				--cookie $COOKIEJAR_PATH \
 				--header "authorization: Bearer $TOKEN") >> $(date +%s)_l.json
 			#| python -m json.tool) >> 

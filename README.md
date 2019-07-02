@@ -1,1 +1,1 @@
-u need to install jq binaries first :/
+u need to install jq and sqlite3 binaries first
