@@ -25,19 +25,20 @@ echo "Input a latitude: "
 read LAT
 echo "Input a longitude: "
 read LNG
-RADIUS=1000
+RADIUS=5000
 ALTITUDE=500
 ACCURACY=100
 SPEED=-1
 HEADING=-1
-
-echo $(echo $KEYS | jq -r ".token")
-
-RESPONSE=$(curl --request GET \
-	--url "${BASE_URL}bird/nearby?latitude=$LAT&longitude=$LNG&radius=$RADIUS" \
-	--header "Authorization: Bird $(echo $KEYS | jq -r ".token")" \
-	--header "Device-Id: $UUID" \
-	--header "App-Version: $VERSION" \
-	--header "Location: {\"latitude\":\"$LAT\",\"longitude\":\"$LNG\",\"altitude\":\"$ALTITUDE\",\"accuracy\":\"$ACCURACY\",\"speed\":\"$SPEED\",\"heading\":\"$HEADING\"}")
-
-echo $RESPONSE
+JSON_NAME=$(date +%s)_b.json
+while true
+do
+	curl --request GET \
+		--url "${BASE_URL}bird/nearby?latitude=$LAT&longitude=$LNG&radius=$RADIUS" \
+		--header "Authorization: Bird $(echo $KEYS | jq -r ".token")" \
+		--header "Device-Id: $UUID" \
+		--header "App-Version: $VERSION" \
+		--header "Location: {\"latitude\":\"$LAT\",\"longitude\":\"$LNG\",\"altitude\":\"$ALTITUDE\",\"accuracy\":\"$ACCURACY\",\"speed\":\"$SPEED\",\"heading\":\"$HEADING\"}" \
+	>> $JSON_NAME
+	sleep 120
+done
