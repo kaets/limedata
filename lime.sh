@@ -9,10 +9,7 @@ BASE_URL="https://web-production.lime.bike/api/rider/v1/"
 
 # Prompt for phone number to auth with Lime
 
-echo "Please enter your phone number associated with your Lime account.
-	You will get an authentication code texted to that number.
-	If you don't have a Lime account associated with that number,
-	make one!"
+echo "Please enter your phone number associated with your Lime account. You will get an authentication code texted to that number. If you don't have a Lime account associated with that number, make one!"
 
 read PHONE
 
@@ -62,13 +59,17 @@ do
 		for y in `seq $LNGBL $STEP_SIZE $LNGTR`
 		do
 			echo $y
+			JSON_NAME=$(date +%s)_l.json
 			(curl --request GET \
 				--url "${BASE_URL}views/map?ne_lat=${x%.1f+$BOUNDING}&ne_lng=${y%.1f+$BOUNDING}&sw_lat=${x%.1f-$BOUNDING}&sw_lng=${y%.1f-$BOUNDING}&user_latitude=${x}&user_longitude=${y}&zoom=${ZOOM}" \
 				--cookie $COOKIEJAR_PATH \
-				--header "authorization: Bearer $TOKEN") >> $(date +%s)_l.json
-			#| python -m json.tool) >> 
+				--header "authorization: Bearer $TOKEN") >> $JSON_NAME
+
+				sed -e "s/{.*ry again later.*}//g" -i "$JSON_NAME" # remove the error object thing if its there
 		done
 	done
+	node parser.js
+	rm "*_l.json"
 	sleep 300
 done
 
